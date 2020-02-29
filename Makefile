@@ -1,0 +1,78 @@
+#    PROJECT    #
+NAME = wolf3d
+
+#    DIRECTORIES    #
+SRC_DIR = ./src/
+LIB_DIR = ./libft/
+OBJ_DIR = ./obj/
+SRC_INC_DIR = ./includes/
+LIB_INC_DIR = ./libft/includes
+GL_INC_DIR =  ~/.brew/include/
+GL_LIB_DIR =  ~/.brew/lib/
+
+#    FLAGS    #
+CFLGS =  -lpthread -lSDL2 -lSDL2main -lSDL2_image
+WFLGS = -Wall -Wextra -Werror
+CFLGS_DBG = -g
+LFLGS = -L$(LIB_DIR) -lft
+CC = gcc
+
+#    LIBFT    #
+LIBFT = $(LIB_DIR)/libft.a
+
+#    SOURCES AND HEADERS    #
+HEADER = includes/wolf3d.h includes/vec3.h
+SRC_FILES = main.c control.c help.c init.c vec3.c reader.c
+SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
+OBJS = $(addprefix $(OBJ_DIR), $(SRC_FILES:%.c=%.o))
+
+#    INCLUDES    #
+INCL = -I $(GL_INC_DIR) -I $(SRC_INC_DIR) -I $(LIB_INC_DIR)
+
+#    RULES    #
+.PHONY: all clean fclean re
+
+all: $(NAME)
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
+	$(CC)  -c $< -o $@ -I $(SRC_INC_DIR) $(INCL) $(CFLGS_DBG)
+
+$(LIBFT):
+	@echo "${LBLUE}########## COMPILE LIBFT.A ##########${RESTORE}"
+	@$(MAKE) -C $(LIB_DIR)
+
+$(NAME): $(OBJ_DIR) $(OBJS) $(LIBFT) $(HEADER)
+	$(CC) $(CFLGS) $(WFLGS) -o $(NAME) $(INCL) $(LFLGS) $(OBJS) -L $(GL_LIB_DIR) $(CFLGS_DBG)
+
+clean:
+	rm -rf $(OBJ_DIR)
+	$(MAKE) -C $(LIB_DIR) clean
+
+fclean: clean
+	rm -rf $(NAME)
+	rm -rf $(SHADER_FRAG)
+	$(MAKE) -C $(LIB_DIR) fclean
+
+re: fclean all
+
+$(OBJ_DIR):
+	@echo "${PURPLE}########## CREATE OBJ DIRECTORY ##########${RESTORE}"
+	@mkdir -p $(OBJ_DIR)
+#	COLORS	#
+RESTORE = \033[0m
+
+RED = \033[00;31m
+GREEN = \033[00;32m
+YELLOW = \033[00;33m
+BLUE = \033[00;34m
+PURPLE = \033[00;35m
+CYAN = \033[00;36m
+LIGHTGRAY = \033[00;37m
+
+LRED = \033[01;31m
+LGREEN = \033[01;32m
+LYELLOW = \033[01;33m
+LBLUE = \033[01;34m
+LPURPLE = \033[01;35m
+LCYAN = \033[01;36m
+WHITE = \033[01;37m
