@@ -12,6 +12,55 @@
 
 #include <wolf3d.h>
 
+/*
+	** int check_line(char **str, int flag, int w_count)
+	** str - array from split
+	** flag - option for start/middle/end line
+	** 		1 = start/end
+	**		2 = middle
+	**	w_count - count of elements
+*/
+
+static int					check_line(char **str, int flag, int w_count)
+{
+	int i;
+	int num = 
+
+	i = 0;
+	if (flag == 1)
+		while (str[i])
+		{
+			if (ft_atoi_with_non_digit_error(str[i]) == 0)
+				return (0);
+			i++;
+		}
+	else if (flag == 2)
+		if (ft_atoi_with_non_digit_error(str[i]) == 0 || ft_atoi_with_non_digit_error(str[w_count - 1]) == 0)
+			return (0);
+	return (1);
+}
+/*
+	** int get_height(char *filename)
+*/
+
+static int					get_height()
+{
+	int fd;
+	int h;
+	int	gnl;
+	char *line;
+
+	h = 0;
+	fd = open("./maps/level1.map", O_RDONLY);
+	while ((gnl = get_next_line(fd, &line)))
+	{
+		if (gnl < 0)
+			exit_with_error("error: file didnt open");
+		h++;
+	}
+	return (h);
+}
+
 static int			get_word_count(char *line)
 {
 	int	word_count;
@@ -33,7 +82,7 @@ static int			get_word_count(char *line)
 	return (word_count);
 }
 
-static t_map_cell	*line_to_point_array(int y, char *line, int word_count)
+static t_map_cell	*line_to_point_array(int flag, char *line, int word_count)
 {
 	int			cur_word_count;
 	char		**z;
@@ -47,6 +96,8 @@ static t_map_cell	*line_to_point_array(int y, char *line, int word_count)
 	z = ft_strsplit(line, ' ');
 	malloc_check(z);
 	free(line);
+	if (!check_line(z, flag, word_count))
+		exit_with_error("error: map error");
 	points = (t_map_cell*)malloc(sizeof(t_map_cell) * (word_count + 1));
 	malloc_check(points);
 	while (z[++i])
@@ -92,22 +143,28 @@ t_map		*get_map_from_file(int fd)
 	int			gnl_res;
 	t_map		*map;
 	t_map_cell		*points;
+	int			h;
 
 	malloc_check(map = (t_map*)malloc(sizeof(t_map)));
 	map->height = 1;
+	h = get_height();
 	gnl_res = get_next_line(fd, &line);
 	if (gnl_res == -1)
 		exit_with_error("error: file didnt open");
 	map->width = get_word_count(line);
-	points = line_to_point_array(map->height - 1, line, map->width);
+	points = line_to_point_array(1, line, map->width);
 	map = add_new_line_to_map(points, map);
 	map->height += 1;
 	while ((gnl_res = get_next_line(fd, &line)))
 	{
 		if (gnl_res == -1)
 			exit_with_error("error: file didnt open");
-		points = line_to_point_array(map->height - 1, line, map->width);
+		if (h == map->height)
+			points = line_to_point_array(1, line, map->width);
+		else
+			points = line_to_point_array(2, line, map->width);
 		map = add_new_line_to_map(points, map);
+		printf("h = %d \t height = %d", h, map->height);
 		map->height += 1;
 	}
 	free(line);
