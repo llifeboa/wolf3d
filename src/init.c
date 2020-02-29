@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:38:51 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/29 16:20:43 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/02/29 18:15:39 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_main			*init()
 	main->quit = 1;
 	main->height = 1080;
 	main->width = 1920;
-	main->minimap_scale = 0.8;
+	main->minimap_scale = 0.5;
 	main->angle = 0;
 	main->rotation_dir = 0;
 	main->rotation_speed = 0.02;
@@ -45,6 +45,7 @@ t_main			*init()
 	SDL_WINDOWPOS_CENTERED, main->width, main->height, SDL_WINDOW_SHOWN);
 	main->sur = SDL_GetWindowSurface(main->win);
 	main->map = get_map_from_file(fd);
+	malloc_check(main->intersections = (t_vec3*)malloc(sizeof(t_vec3) * (main->width)));
 	load_textures(main);
 	return (main);
 }

@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:31:15 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/28 03:16:53 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/02/29 18:17:58 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ typedef struct		s_main
 	t_vec3			right_dir;
 	t_map			*map;
 	float			minimap_scale;
+	t_vec3			*intersections;
 }					t_main;
 
 typedef struct		s_ray_data
