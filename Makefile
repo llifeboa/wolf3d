@@ -7,11 +7,11 @@ LIB_DIR = ./libft/
 OBJ_DIR = ./obj/
 SRC_INC_DIR = ./includes/
 LIB_INC_DIR = ./libft/includes
-GL_INC_DIR =  ~/.brew/include/
-GL_LIB_DIR =  ~/.brew/lib/
+SDL_F_DIR	= ./SDL/framework
+SDL_INC_DIR = ./SDL/include
 
 #    FLAGS    #
-CFLGS =  -lpthread -lSDL2 -lSDL2main -lSDL2_image
+CFLGS = -Wl -rpath $(SDL_F_DIR) -F $(SDL_F_DIR) -framework SDL2 -framework SDL2_mixer -framework SDL2_image
 WFLGS = -Wall -Wextra -Werror
 CFLGS_DBG = -g
 LFLGS = -L$(LIB_DIR) -lft
@@ -27,7 +27,7 @@ SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS = $(addprefix $(OBJ_DIR), $(SRC_FILES:%.c=%.o))
 
 #    INCLUDES    #
-INCL = -I $(GL_INC_DIR) -I $(SRC_INC_DIR) -I $(LIB_INC_DIR)
+INCL = -I $(SDL_INC_DIR) -I $(SRC_INC_DIR) -I $(LIB_INC_DIR)
 
 #    RULES    #
 .PHONY: all clean fclean re
@@ -35,7 +35,7 @@ INCL = -I $(GL_INC_DIR) -I $(SRC_INC_DIR) -I $(LIB_INC_DIR)
 all: $(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
-	$(CC)  -c $< -o $@ -I $(SRC_INC_DIR) $(INCL) $(CFLGS_DBG)
+	$(CC) -c $< -o $@ -I $(SRC_INC_DIR) $(INCL) $(CFLGS_DBG)
 
 $(LIBFT):
 	@echo "${LBLUE}########## COMPILE LIBFT.A ##########${RESTORE}"
