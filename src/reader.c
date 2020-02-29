@@ -12,6 +12,66 @@
 
 #include <wolf3d.h>
 
+static void				free_split(char **split)
+{
+	int i;
+
+	i = 0;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+}
+
+/*
+	** int check_elem(char *s, int wc)
+	** s - current elem
+	** wc - elements count
+*/
+
+static int				check_elem(char *s, int wc)
+{
+	char	**elem;
+	int		i;
+	int		value;
+	int		check;
+
+	elem = ft_strsplit(s, ',');
+	malloc_check(elem);
+	i = 0;
+	check = 1;
+	if (wc == 1)
+	{
+		value = ft_atoi_with_non_digit_error(elem[i]);
+		if (value >= 0 && value <= 10)
+		{
+			free(elem[i]);
+			free(elem);
+		}
+		else
+		{
+			free(elem[i]);
+			free(elem);
+			check = 0;
+		}
+	}
+	else
+	{
+		while (i < wc)
+		{
+			value = ft_atoi_with_non_digit_error(elem[i]);
+			free(elem[i]);
+			if (!(value > 0 && value <= 10))
+				check = 0;
+			i++;
+		}
+		free(elem);
+	}
+	return (check);
+}
+
 /*
 	** int check_line(char **str, int flag, int w_count)
 	** str - array from split
@@ -24,7 +84,6 @@
 static int					check_line(char **str, int flag, int w_count)
 {
 	int i;
-	int num = 
 
 	i = 0;
 	if (flag == 1)
@@ -39,6 +98,7 @@ static int					check_line(char **str, int flag, int w_count)
 			return (0);
 	return (1);
 }
+
 /*
 	** int get_height(char *filename)
 */
@@ -61,7 +121,7 @@ static int					get_height()
 	return (h);
 }
 
-static int			get_word_count(char *line)
+static int			get_word_count(char *line, char sep)
 {
 	int	word_count;
 	int	flag;
@@ -70,12 +130,12 @@ static int			get_word_count(char *line)
 	word_count = 0;
 	while (*line)
 	{
-		if (*line != ' ' && !flag)
+		if (*line != sep && !flag)
 		{
 			word_count++;
 			flag = 1;
 		}
-		if (*line == ' ')
+		if (*line == sep)
 			flag = 0;
 		line++;
 	}
@@ -88,21 +148,37 @@ static t_map_cell	*line_to_point_array(int flag, char *line, int word_count)
 	char		**z;
 	t_map_cell	*points;
 	int			i;
+	int			wc;
+	char		**elem;
 
 	i = -1;
-	cur_word_count = get_word_count(line);
+	cur_word_count = get_word_count(line, ' ');
 	if (cur_word_count != word_count)
 		exit_with_error("error: wrond map");
 	z = ft_strsplit(line, ' ');
 	malloc_check(z);
 	free(line);
 	if (!check_line(z, flag, word_count))
-		exit_with_error("error: map error");
+		exit_with_error("error: wrong map");
 	points = (t_map_cell*)malloc(sizeof(t_map_cell) * (word_count + 1));
 	malloc_check(points);
 	while (z[++i])
 	{
-		points[i].front = ft_atoi_with_non_digit_error(z[i]);
+		wc = get_word_count(z[i], ',');
+		if (wc == 1 && check_elem(z[i], wc))
+			points[i].front = ft_atoi_with_non_digit_error(z[i]);
+		else if (wc == 4 && check_elem(z[i], wc))
+		{
+			elem = ft_strsplit(z[i], ',');
+			malloc_check(elem);
+			points[i].front = ft_atoi_with_non_digit_error(elem[0]);
+			points[i].back = ft_atoi_with_non_digit_error(elem[1]);
+			points[i].left = ft_atoi_with_non_digit_error(elem[2]);
+			points[i].right = ft_atoi_with_non_digit_error(elem[3]);
+			free_split(elem);
+		}
+		else
+			exit_with_error("error: wrong map");
 		free(z[i]);
 	}
 	free(z);
@@ -151,7 +227,7 @@ t_map		*get_map_from_file(int fd)
 	gnl_res = get_next_line(fd, &line);
 	if (gnl_res == -1)
 		exit_with_error("error: file didnt open");
-	map->width = get_word_count(line);
+	map->width = get_word_count(line, ' ');
 	points = line_to_point_array(1, line, map->width);
 	map = add_new_line_to_map(points, map);
 	map->height += 1;
@@ -164,7 +240,6 @@ t_map		*get_map_from_file(int fd)
 		else
 			points = line_to_point_array(2, line, map->width);
 		map = add_new_line_to_map(points, map);
-		printf("h = %d \t height = %d", h, map->height);
 		map->height += 1;
 	}
 	free(line);

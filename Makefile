@@ -42,7 +42,7 @@ $(LIBFT):
 	@$(MAKE) -C $(LIB_DIR)
 
 $(NAME): $(OBJ_DIR) $(OBJS) $(LIBFT) $(HEADER)
-	$(CC) $(CFLGS) $(WFLGS) -o $(NAME) $(INCL) $(LFLGS) $(OBJS) -L $(GL_LIB_DIR) $(CFLGS_DBG)
+	$(CC) $(CFLGS) $(WFLGS) -o $(NAME) $(INCL) $(LFLGS) $(OBJS) $(CFLGS_DBG)
 
 clean:
 	rm -rf $(OBJ_DIR)
