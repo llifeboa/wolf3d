@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:38:51 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/29 13:54:27 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/02/29 15:26:19 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void		load_textures(t_main *main)
 	rwop = SDL_RWFromFile("img/wolf.png", "r");
 	main->textures[0] = IMG_LoadPNG_RW(rwop);
 	main->textures[0] = SDL_ConvertSurfaceFormat(main->textures[0], SDL_PIXELFORMAT_ARGB8888, 0);
+	//main->textures[0] = SDL_LoadBMP("img/wolf.bmp");
 }
 
 t_main			*init()

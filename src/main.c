@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:07:37 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/29 13:55:36 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/02/29 15:34:32 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,9 +223,14 @@ void	walls(t_main *main, float cos, float sin)
 		j = 0;
 		while (j < length_wall)
 		{
-			int *dist = (int*)(main->sur->pixels);
-			int	*src = (int*)(main->textures[0]->pixels);
-			dist[(start_paint + j) * main->sur->w + i] = src[(int)(((float)j / (float)length_wall * 64.0)) * 64 + (h_or_v == 1 ? ((int)(intersection.x) % 64) : (63 - (int)(intersection.z) % 64))];
+			if (start_paint + j >= 0 && start_paint + j < main->height)
+			{
+				int *dist = (int*)(main->sur->pixels);
+				int	*src = (int*)(main->textures[0]->pixels);
+				dist[(start_paint + j) * main->sur->w + i] =
+				src[(int)(((float)j / (float)length_wall * 64.0)) * 64 +
+				(h_or_v == 1 ? ((int)(intersection.x) % 64) : (63 - (int)(intersection.z) % 64))];
+			}
 			j++;
 		}
 		cur += step;
@@ -236,9 +241,13 @@ void	walls(t_main *main, float cos, float sin)
 void move(t_main *main, float cos, float sin)
 {
 	t_vec3 dir_vec;
+	t_vec3 prev_position;
 
+	prev_position = main->position;
 	dir_vec = rotate_y(main->forward_dir, cos, sin);
 	main->position = vec3_add(main->position, vec3_mult(dir_vec, main->move_dir * main->move_speed));
+	if(main->map->map_cells[(int)main->position.z / 64][(int)main->position.x / 64].front)
+		main->position = prev_position;
 }
 
 int main() 
