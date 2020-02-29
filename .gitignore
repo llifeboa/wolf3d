@@ -3,4 +3,4 @@
 obj
 wolf3d
 libft/*.o
-libf/libft.a
+libft/libft.a
