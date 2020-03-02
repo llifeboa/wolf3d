@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:07:37 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/03 00:06:31 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/03 01:06:52 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	print_frame(t_main *main, SDL_Surface *frame)
 		j = 0;
 		while(j < frame->w)
 		{
-			if ( src[i * frame->w + j] & 0x11000000)
+			if (src[i * frame->w + j] & 0x11000000)
 				dist[(main->sur->h - frame->h + i) * main->sur->w + j + main->sur->w - frame->w] = src[i * frame->w + j];
 			j++;
 		}
@@ -324,7 +324,7 @@ int main()
 	{
 		t = SDL_GetTicks();
 
-		// main->angle += 0.01;
+		SDL_LockSurface(main->sur);
 		print_rect(main, (t_vec3){0,0, 0}, (t_vec3){main->width, main->height, 0}, 0);
 		while(SDL_PollEvent(&(main->e)))
 			controls(main);
@@ -350,10 +350,13 @@ int main()
 		}
 		walls(main, cos, sin);
 		animation_update(main, main->weapon, SDL_GetTicks());
+		
+		SDL_UnlockSurface(main->sur);
 		SDL_UpdateWindowSurface(main->win);
 		printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
 	}
 	SDL_DestroyWindow(main->win);
 	SDL_Quit();
-    return 0; 
+    exit(0);
+	return(0);
 } 

@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:31:15 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/02 23:21:18 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/03 01:17:08 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ typedef struct		s_main
 	SDL_Window		*win;
 	SDL_Surface		*sur;
 	SDL_Event		e;
-	SDL_Surface		*textures[100];
+	SDL_Surface		**textures;
 	int				width;
 	int				height;
 	int				step;
