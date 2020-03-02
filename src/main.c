@@ -6,11 +6,61 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:07:37 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/29 18:20:17 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/03 00:06:31 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <wolf3d.h>
+
+void	print_frame(t_main *main, SDL_Surface *frame)
+{
+	int *dist = (int*)(main->sur->pixels);
+	int	*src = (int*)(frame->pixels);
+	int i;
+	int j;
+
+	i = 0;
+	while (i < frame->h)
+	{
+		j = 0;
+		while(j < frame->w)
+		{
+			if ( src[i * frame->w + j] & 0x11000000)
+				dist[(main->sur->h - frame->h + i) * main->sur->w + j + main->sur->w - frame->w] = src[i * frame->w + j];
+			j++;
+		}
+		i++;
+	}
+}
+
+void	animation_start(t_animation *anim, Uint32 start_time)
+{
+	anim->state = 1;
+	anim->start_time = start_time;
+}
+
+void	animation_update(t_main *main, t_animation *anim, Uint32 cur_time)
+{
+	Uint32 delta = cur_time - anim->start_time;
+
+	if (anim->state)
+	{
+		if(delta / (anim->duration / anim->frame_count) == anim->frame_count)
+		{
+			anim->state = 0;
+			print_frame(main, anim->frames[0]);
+		}
+		else
+		{
+			print_frame(main, anim->frames[delta / (anim->duration / anim->frame_count)]);
+		}
+	}
+	else
+	{
+		print_frame(main, anim->main_frame);
+	}
+	
+}
 
 float	fish_eye(t_vec3 origin, t_vec3 cur)
 {
@@ -209,7 +259,8 @@ void	walls(t_main *main, float cos, float sin)
 	float length;
 	float length_v;
 	float length_h;
-	int length_wall;
+	int length_wall_o;
+	int length_wall_p;
 	int start_paint;
 	float fish_eye_fix;
 	int h_or_v;
@@ -228,19 +279,17 @@ void	walls(t_main *main, float cos, float sin)
 		h_or_v = (length_h > length_v ? 0 : 1); 
 		intersection = length_h > length_v ? v_intersect_1 : h_intersect_1;
 		main->intersections[i] = intersection;
-		length_wall = (int)(main->height / (length / 64));
-		start_paint = (main->height - length_wall) / 2;
+		length_wall_o = (int)(main->height / (length / 64));
+		length_wall_p = length_wall_o > main->height ? main->height : length_wall_o;
+		start_paint = (main->height - length_wall_p) / 2;
 		j = 0;
-		while (j < length_wall)
+		int *dist = (int*)(main->sur->pixels);
+		int	*src = (int*)(main->textures[0]->pixels);
+		while (j < length_wall_p)
 		{
-			if (start_paint + j >= 0 && start_paint + j < main->height)
-			{
-				int *dist = (int*)(main->sur->pixels);
-				int	*src = (int*)(main->textures[0]->pixels);
-				dist[(start_paint + j) * main->sur->w + i] =
-				src[(int)(((float)j / (float)length_wall * 64.0)) * 64 +
-				(h_or_v == 1 ? ((int)(intersection.x) % 64) : (63 - (int)(intersection.z) % 64))];
-			}
+			dist[(start_paint + j) * main->sur->w + i] =
+			src[(int)(((float)j / length_wall_p * 64.0)) * 64 +
+			(h_or_v == 1 ? ((int)(intersection.x) % 64) : (63 - (int)(intersection.z) % 64))];
 			j++;
 		}
 		cur += step;
@@ -275,7 +324,6 @@ int main()
 	{
 		t = SDL_GetTicks();
 
-		SDL_LockSurface(main->sur);
 		// main->angle += 0.01;
 		print_rect(main, (t_vec3){0,0, 0}, (t_vec3){main->width, main->height, 0}, 0);
 		while(SDL_PollEvent(&(main->e)))
@@ -301,9 +349,8 @@ int main()
 			i++;
 		}
 		walls(main, cos, sin);
-		SDL_UnlockSurface(main->sur);
+		animation_update(main, main->weapon, SDL_GetTicks());
 		SDL_UpdateWindowSurface(main->win);
-
 		printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
 	}
 	SDL_DestroyWindow(main->win);

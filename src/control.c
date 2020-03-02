@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 16:15:09 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/28 03:21:02 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/03 00:06:00 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ void	controls(t_main *main)
 			main->move_dir = 1;
 		else if (main->e.key.keysym.sym == SDLK_s)
 			main->move_dir = -1;
+		else if (main->e.key.keysym.sym == SDLK_p)
+			animation_start(main->weapon, SDL_GetTicks());
 	}
 	if(main->e.type == SDL_KEYUP)
 	{

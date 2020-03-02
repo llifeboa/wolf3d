@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:31:15 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/29 18:17:58 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/02 23:21:18 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,16 @@
 #include <vec3.h>
 #include <pthread.h>
 # include <fcntl.h>
+
+typedef struct		s_animation
+{
+	unsigned int	frame_count;
+	Uint32			duration;
+	unsigned int	state;
+	Uint32			start_time;
+	SDL_Surface		**frames;
+	SDL_Surface		*main_frame;
+}					t_animation;
 
 typedef struct		s_map_cell
 {
@@ -40,7 +50,7 @@ typedef struct		s_main
 	SDL_Window		*win;
 	SDL_Surface		*sur;
 	SDL_Event		e;
-	SDL_Surface		*textures[1];
+	SDL_Surface		*textures[100];
 	int				width;
 	int				height;
 	int				step;
@@ -57,6 +67,7 @@ typedef struct		s_main
 	t_map			*map;
 	float			minimap_scale;
 	t_vec3			*intersections;
+	t_animation		*weapon;
 }					t_main;
 
 typedef struct		s_ray_data
@@ -86,4 +97,5 @@ t_main				*init();
 void				*cast_ray(void *param);
 t_map				*get_map_from_file(int fd);
 int					ft_atoi_with_non_digit_error(const char *str);
+void				animation_start(t_animation *anim, Uint32 start_time);
 #endif
