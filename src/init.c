@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:38:51 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/03 01:21:43 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 02:39:58 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,38 @@
 
 static void		load_textures(t_main *main)
 {
-	IMG_Init(IMG_INIT_PNG);
 	SDL_RWops *rwop;
-	rwop = SDL_RWFromFile("img/wolf.png", "r");
-	malloc_check(main->textures[0] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-0.png", "r");
-	malloc_check(main->textures[1] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-1.png", "r");
-	malloc_check(main->textures[2] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-2.png", "r");
-	malloc_check(main->textures[3] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-3.png", "r");
-	malloc_check(main->textures[4] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-4.png", "r");
-	malloc_check(main->textures[5] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-5.png", "r");
-	malloc_check(main->textures[6] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-6.png", "r");
-	malloc_check(main->textures[7] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-7.png", "r");
-	malloc_check(main->textures[8] = IMG_LoadPNG_RW(rwop));
 
+	rwop = SDL_RWFromFile("img/textures/wolf.png", "r");
+	malloc_check(main->images.textures[0] = IMG_LoadPNG_RW(rwop));
+}
+
+static void		load_animations_bow(t_main *main)
+{
+	
+	SDL_RWops *rwop;
+	
+	rwop = SDL_RWFromFile("img/animation/bow/0-7.png", "r");
+	malloc_check(main->images.animation[0][0] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-0.png", "r");
+	malloc_check(main->images.animation[0][1] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-1.png", "r");
+	malloc_check(main->images.animation[0][2] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-2.png", "r");
+	malloc_check(main->images.animation[0][3] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-3.png", "r");
+	malloc_check(main->images.animation[0][4] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-4.png", "r");
+	malloc_check(main->images.animation[0][5] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-5.png", "r");
+	malloc_check(main->images.animation[0][6] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/animation/bow/0-6.png", "r");
+	malloc_check(main->images.animation[0][7] = IMG_LoadPNG_RW(rwop));
+}
+
+static void		load_animations(t_main *main)
+{
+	load_animations_bow(main);
 }
 
 t_animation *init_animation(t_main *main)
@@ -43,18 +54,18 @@ t_animation *init_animation(t_main *main)
 
 	result = (t_animation*)malloc(sizeof(t_animation));
 	result->frame_count = 8;
-	result->duration = 500;
+	result->duration = 700;
 	result->state = 0;
 	result->frames = (SDL_Surface**)malloc(sizeof(SDL_Surface*) * result->frame_count);
-	result->frames[0] = main->textures[4];
-	result->frames[1] = main->textures[5];
-	result->frames[2] = main->textures[6];
-	result->frames[3] = main->textures[7];
-	result->frames[4] = main->textures[8];
-	result->frames[5] = main->textures[1];
-	result->frames[6] = main->textures[2];
-	result->frames[7] = main->textures[3];
-	result->main_frame = main->textures[4];
+	result->frames[0] = main->images.animation[0][4];
+	result->frames[1] = main->images.animation[0][5];
+	result->frames[2] = main->images.animation[0][6];
+	result->frames[3] = main->images.animation[0][7];
+	result->frames[4] = main->images.animation[0][0];
+	result->frames[5] = main->images.animation[0][1];
+	result->frames[6] = main->images.animation[0][2];
+	result->frames[7] = main->images.animation[0][3];
+	result->main_frame = main->images.animation[0][4];
 	return (result);
 }
 
@@ -83,8 +94,9 @@ t_main			*init()
 	main->sur = SDL_GetWindowSurface(main->win);
 	main->map = get_map_from_file(fd);
 	malloc_check(main->intersections = (t_vec3*)malloc(sizeof(t_vec3) * (main->width)));
-	malloc_check(main->textures  = (SDL_Surface**)malloc(sizeof(SDL_Surface*) * 100));
+	IMG_Init(IMG_INIT_PNG);
 	load_textures(main);
+	load_animations(main);
 	main->weapon = init_animation(main);
 	return (main);
 }

@@ -6,27 +6,28 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:07:37 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/03 01:06:52 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 02:48:38 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <wolf3d.h>
 
-void	print_frame(t_main *main, SDL_Surface *frame)
+void	print_frame(t_main *main, SDL_Surface *frame, int size)
 {
 	int *dist = (int*)(main->sur->pixels);
 	int	*src = (int*)(frame->pixels);
 	int i;
 	int j;
-
+	int h = frame->h * size;
+	int w = frame->w * size;
 	i = 0;
-	while (i < frame->h)
+	while (i < h)
 	{
 		j = 0;
-		while(j < frame->w)
+		while(j < w)
 		{
-			if (src[i * frame->w + j] & 0x11000000)
-				dist[(main->sur->h - frame->h + i) * main->sur->w + j + main->sur->w - frame->w] = src[i * frame->w + j];
+			if (src[(i / size * w / size ) + (j / size)] & 0x11000000)
+				dist[(main->sur->h - h + i) * main->sur->w + j + main->sur->w - w] = src[(i / size * w / size ) + (j / size)];
 			j++;
 		}
 		i++;
@@ -35,8 +36,11 @@ void	print_frame(t_main *main, SDL_Surface *frame)
 
 void	animation_start(t_animation *anim, Uint32 start_time)
 {
-	anim->state = 1;
-	anim->start_time = start_time;
+	if (anim->state == CAN_ANIMATITE)
+	{
+		anim->state = ANIMATING;
+		anim->start_time = start_time;
+	}
 }
 
 void	animation_update(t_main *main, t_animation *anim, Uint32 cur_time)
@@ -47,17 +51,17 @@ void	animation_update(t_main *main, t_animation *anim, Uint32 cur_time)
 	{
 		if(delta / (anim->duration / anim->frame_count) == anim->frame_count)
 		{
-			anim->state = 0;
-			print_frame(main, anim->frames[0]);
+			anim->state = CAN_ANIMATITE;
+			print_frame(main, anim->frames[0], 6);
 		}
 		else
 		{
-			print_frame(main, anim->frames[delta / (anim->duration / anim->frame_count)]);
+			print_frame(main, anim->frames[delta / (anim->duration / anim->frame_count)], 6);
 		}
 	}
 	else
 	{
-		print_frame(main, anim->main_frame);
+		print_frame(main, anim->main_frame, 6);
 	}
 	
 }
@@ -158,9 +162,10 @@ void *cast_ray(void *param)
 	int i = 0;
 	int j = 0;
 	int *src;
-	int *dist; 
+	int *dist;
+	int color;
 	dist = (int*)(data->main->sur->pixels);
-	src = (int*)(data->main->textures[0]->pixels);
+	src = (int*)(data->main->images.textures[0]->pixels);
 	while(j < data->main->step)
 	{
 		left_ray.origin = data->main->position;
@@ -176,10 +181,10 @@ void *cast_ray(void *param)
 		t_vec3 point = left_intersection;
 
 		while(i < data->main->width)
-		{		
-			dist[(data->y - j) * data->main->sur->w + i] =
-			src[64 * (63 - ((int)(point.z > 0 ? point.z : -point.z) % 64)) +
+		{	
+			color = src[64 * (63 - ((int)(point.z > 0 ? point.z : -point.z) % 64)) +
 			((int)(point.x > 0 ? point.x : -point.x) % 64)];
+			dist[(data->y - j) * data->main->sur->w + i] = color;
 			point.z += step.z;
 			point.x += step.x;
 			i++;
@@ -244,6 +249,18 @@ t_vec3	intersection_vertical(t_main *main, t_vec3 origin, t_vec3 direction)
 	return (t_vec3){x, 32, point_2};
 }
 
+int		by_byte_dis(int color, unsigned char dis)
+{
+	unsigned char* result;
+	
+	dis = dis == 0 ? 1 : dis;
+	result = (unsigned char*)&color;
+	result[1] = (unsigned char)((float)result[1] / dis);
+	result[2] = (unsigned char)((float)result[2] / dis);
+	result[0] = (unsigned char)((float)result[0] / dis);
+	return color;
+}
+
 void	walls(t_main *main, float cos, float sin)
 {
 	int i = 0;
@@ -264,6 +281,7 @@ void	walls(t_main *main, float cos, float sin)
 	int start_paint;
 	float fish_eye_fix;
 	int h_or_v;
+	int color;
 	while(i < main->width)
 	{
 		h_intersect = intersection_horizontal(main, main->position, rotate_y((t_vec3){cur, 32, 1}, cos, sin));
@@ -284,12 +302,13 @@ void	walls(t_main *main, float cos, float sin)
 		start_paint = (main->height - length_wall_p) / 2;
 		j = 0;
 		int *dist = (int*)(main->sur->pixels);
-		int	*src = (int*)(main->textures[0]->pixels);
+		int	*src = (int*)(main->images.textures[0]->pixels);
 		while (j < length_wall_p)
 		{
-			dist[(start_paint + j) * main->sur->w + i] =
-			src[(int)(((float)j / length_wall_p * 64.0)) * 64 +
+			color = src[(int)((((length_wall_o - length_wall_p) / 2 + (float)j) / length_wall_o * 64.0)) * 64 +
 			(h_or_v == 1 ? ((int)(intersection.x) % 64) : (63 - (int)(intersection.z) % 64))];
+			dist[(start_paint + j) * main->sur->w + i] = color;
+			
 			j++;
 		}
 		cur += step;
@@ -338,7 +357,7 @@ int main()
 			thread[i].main = main;
 			thread[i].cos = &cos;
 			thread[i].sin = &sin;
-			thread[i].y = main->height - i * main->step;
+			thread[i].y = (main->height - i * main->step) - 1;
 			pthread_create(&(thread[i].tid), NULL, cast_ray, &thread[i]);
 			i++;
 		}

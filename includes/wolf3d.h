@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:31:15 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/03 01:17:08 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 02:40:53 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <vec3.h>
 #include <pthread.h>
 # include <fcntl.h>
+#define CAN_ANIMATITE 0
+#define	ANIMATING 1
 
 typedef struct		s_animation
 {
@@ -45,12 +47,19 @@ typedef struct		s_map
 	int				height;
 }					t_map;
 
+typedef struct		s_img
+{
+	SDL_Surface		*textures[100];
+	SDL_Surface		*animation[1][8];
+}					t_img;
+
+
 typedef struct		s_main
 {
 	SDL_Window		*win;
 	SDL_Surface		*sur;
 	SDL_Event		e;
-	SDL_Surface		**textures;
+	t_img			images;
 	int				width;
 	int				height;
 	int				step;
@@ -98,4 +107,5 @@ void				*cast_ray(void *param);
 t_map				*get_map_from_file(int fd);
 int					ft_atoi_with_non_digit_error(const char *str);
 void				animation_start(t_animation *anim, Uint32 start_time);
+int					by_byte_dis(int color, unsigned char dis);
 #endif

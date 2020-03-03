@@ -35,14 +35,14 @@ INCL = -I $(SDL_INC_DIR) -I $(SRC_INC_DIR) -I $(LIB_INC_DIR)
 all: $(NAME)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
-	$(CC) -c $< -o $@ -I $(SRC_INC_DIR) $(INCL) $(CFLGS_DBG)
+	$(CC) -c $< -o $@ -I $(SRC_INC_DIR) $(INCL) $(CFLGS_DBG) -Ofast
 
 $(LIBFT):
 	@echo "${LBLUE}########## COMPILE LIBFT.A ##########${RESTORE}"
 	@$(MAKE) -C $(LIB_DIR)
 
 $(NAME): $(OBJ_DIR) $(OBJS) $(LIBFT) $(HEADER)
-	$(CC) $(CFLGS) $(WFLGS) -o $(NAME) $(INCL) $(LFLGS) $(OBJS) $(CFLGS_DBG)
+	$(CC) $(CFLGS) $(WFLGS) -o $(NAME) $(INCL) $(LFLGS) $(OBJS) $(CFLGS_DBG) -Ofast
 
 clean:
 	rm -rf $(OBJ_DIR)
