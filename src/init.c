@@ -12,6 +12,18 @@
 
 #include <wolf3d.h>
 
+void			sound_init(t_main *main)
+{
+	Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096);
+	main->sound.track = Mix_LoadMUS("audio/music/calm3.ogg");
+	main->sound.bowhit = Mix_LoadWAV("audio/fx/bow.ogg");
+	main->sound.step = Mix_LoadWAV("audio/fx/stone3.ogg");
+	Mix_AllocateChannels(10);
+	Mix_VolumeChunk(main->sound.bowhit, 15);
+	Mix_VolumeMusic(25);
+	Mix_PlayMusic(main->sound.track, 15);
+}
+
 static void		load_textures(t_main *main)
 {
 	SDL_RWops *rwop;
@@ -54,7 +66,7 @@ t_animation *init_animation(t_main *main)
 
 	result = (t_animation*)malloc(sizeof(t_animation));
 	result->frame_count = 8;
-	result->duration = 700;
+	result->duration = 800;
 	result->state = 0;
 	result->frames = (SDL_Surface**)malloc(sizeof(SDL_Surface*) * result->frame_count);
 	result->frames[0] = main->images.animation[0][4];
@@ -98,5 +110,6 @@ t_main			*init()
 	load_textures(main);
 	load_animations(main);
 	main->weapon = init_animation(main);
+	sound_init(main);
 	return (main);
 }

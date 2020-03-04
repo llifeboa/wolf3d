@@ -34,12 +34,13 @@ void	print_frame(t_main *main, SDL_Surface *frame, int size)
 	}
 }
 
-void	animation_start(t_animation *anim, Uint32 start_time)
+void	animation_start(t_main *main, Uint32 start_time)
 {
-	if (anim->state == CAN_ANIMATITE)
+	if (main->weapon->state == CAN_ANIMATITE)
 	{
-		anim->state = ANIMATING;
-		anim->start_time = start_time;
+		Mix_PlayChannel(1, main->sound.bowhit, 0);
+		main->weapon->state = ANIMATING;
+		main->weapon->start_time = start_time;
 	}
 }
 

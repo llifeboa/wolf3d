@@ -22,7 +22,7 @@ LIBFT = $(LIB_DIR)/libft.a
 
 #    SOURCES AND HEADERS    #
 HEADER = includes/wolf3d.h includes/vec3.h
-SRC_FILES = main.c control.c help.c init.c vec3.c reader.c
+SRC_FILES = main.c control.c help.c init.c vec3.c reader.c audio_control.c
 SRCS = $(addprefix $(SRC_DIR), $(SRC_FILES))
 OBJS = $(addprefix $(OBJ_DIR), $(SRC_FILES:%.c=%.o))
 

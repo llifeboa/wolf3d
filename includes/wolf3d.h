@@ -11,16 +11,18 @@
 /* ************************************************************************** */
 
 #ifndef	WOLF3D_H
-#define	WOLF3D_H
-#define THREAD_COUNT 10
-#include <libft.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <vec3.h>
-#include <pthread.h>
+# define	WOLF3D_H
+# define	THREAD_COUNT 10
+# include <libft.h>
+# include <SDL2/SDL.h>
+# include <SDL2/SDL_image.h>
+# include <SDL2/SDL_ttf.h>
+# include <SDL2/SDL_mixer.h>
+# include <vec3.h>
+# include <pthread.h>
 # include <fcntl.h>
-#define CAN_ANIMATITE 0
-#define	ANIMATING 1
+# define	CAN_ANIMATITE 0
+# define	ANIMATING 1
 
 typedef struct		s_animation
 {
@@ -53,6 +55,13 @@ typedef struct		s_img
 	SDL_Surface		*animation[1][8];
 }					t_img;
 
+typedef struct		s_sounds
+{
+	Mix_Music		*track;
+	Mix_Chunk		*bowhit;
+	Mix_Chunk		*step;
+}					t_sounds;
+
 
 typedef struct		s_main
 {
@@ -77,6 +86,7 @@ typedef struct		s_main
 	float			minimap_scale;
 	t_vec3			*intersections;
 	t_animation		*weapon;
+	t_sounds		sound;
 }					t_main;
 
 typedef struct		s_ray_data
@@ -106,6 +116,8 @@ t_main				*init();
 void				*cast_ray(void *param);
 t_map				*get_map_from_file(int fd);
 int					ft_atoi_with_non_digit_error(const char *str);
-void				animation_start(t_animation *anim, Uint32 start_time);
+void				animation_start(t_main *main, Uint32 start_time);
 int					by_byte_dis(int color, unsigned char dis);
+void				audio_contol(t_main *main);
+
 #endif

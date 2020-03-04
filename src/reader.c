@@ -166,7 +166,12 @@ static t_map_cell	*line_to_point_array(int flag, char *line, int word_count)
 	{
 		wc = get_word_count(z[i], ',');
 		if (wc == 1 && check_elem(z[i], wc))
+		{
 			points[i].front = ft_atoi_with_non_digit_error(z[i]);
+			points[i].back = ft_atoi_with_non_digit_error(z[i]);
+			points[i].left = ft_atoi_with_non_digit_error(z[i]);
+			points[i].right = ft_atoi_with_non_digit_error(z[i]);
+		}
 		else if (wc == 4 && check_elem(z[i], wc))
 		{
 			elem = ft_strsplit(z[i], ',');
