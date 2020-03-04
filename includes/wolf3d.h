@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:31:15 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/04 02:40:53 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 12:55:41 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,16 @@
 # include <fcntl.h>
 # define CAN_ANIMATITE 0
 # define ANIMATING 1
+# define WALL_FRONT 0
+# define WALL_BACK 1
+# define WALL_LEFT 2
+# define WALL_RIGHT 3
+
+typedef struct		s_wall_info
+{
+	SDL_Surface		*texture;
+	int				side;
+}					t_wall_info;
 
 typedef struct		s_animation
 {

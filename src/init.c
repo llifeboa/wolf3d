@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:38:51 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/04 02:39:58 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 14:29:38 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,15 @@ static void		load_textures(t_main *main)
 	SDL_RWops *rwop;
 
 	rwop = SDL_RWFromFile("img/textures/wolf.png", "r");
-	malloc_check(main->images.textures[0] = IMG_LoadPNG_RW(rwop));
+	malloc_check(main->images.textures[1] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/textures/wood.png", "r");
+	malloc_check(main->images.textures[2] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/textures/eagle.png", "r");
+	malloc_check(main->images.textures[3] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/textures/pikuma.png", "r");
+	malloc_check(main->images.textures[4] = IMG_LoadPNG_RW(rwop));
+	rwop = SDL_RWFromFile("img/textures/bluestone.png", "r");
+	malloc_check(main->images.textures[5] = IMG_LoadPNG_RW(rwop));
 }
 
 static void		load_animations_bow(t_main *main)

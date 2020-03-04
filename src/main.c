@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:07:37 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/04 02:48:38 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 14:24:11 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ void *cast_ray(void *param)
 	int *dist;
 	int color;
 	dist = (int*)(data->main->sur->pixels);
-	src = (int*)(data->main->images.textures[0]->pixels);
+	src = (int*)(data->main->images.textures[1]->pixels);
 	while(j < data->main->step)
 	{
 		left_ray.origin = data->main->position;
@@ -206,7 +206,7 @@ t_vec3	intersection_horizontal(t_main *main, t_vec3 origin, t_vec3 direction)
 
 	if (point_1 > (main->map->width - 1) * 64 || point_1 < 64)
 		return (t_vec3){point_1, 32, z};
-	if (main->map->map_cells[(int)((z + dir) / 64)][(int)(point_1 / 64)].front == 1)
+	if (main->map->map_cells[(int)((z + dir) / 64)][(int)(point_1 / 64)].front > 0)
 		return (t_vec3){point_1, 32, z};
 	z += 64 * dir;
 	float point_2 = (z - origin.z) * direction.x / direction.z + origin.x;
@@ -233,7 +233,7 @@ t_vec3	intersection_vertical(t_main *main, t_vec3 origin, t_vec3 direction)
 
 	if (point_1 > (main->map->height - 1) * 64 || point_1 < 64)
 		return (t_vec3){x, 32, point_1};
-	if (main->map->map_cells[(int)(point_1 / 64)][(int)((x + dir) / 64)].front == 1)
+	if (main->map->map_cells[(int)(point_1 / 64)][(int)((x + dir) / 64)].front > 0)
 		return (t_vec3){x, 32, point_1};
 	x += 64 * dir;
 	float point_2 = (x - origin.x) * direction.z / direction.x + origin.z;
@@ -262,6 +262,43 @@ int		by_byte_dis(int color, unsigned char dis)
 	return color;
 }
 
+t_wall_info		get_wall_info(t_main *main, t_vec3 ray, t_vec3 intersection, int h_or_v)
+{
+	unsigned int	texture_id;
+	int				side;
+
+	if (h_or_v)
+	{
+		if(ray.z > 0)
+		{
+			texture_id = main->map->map_cells[(int)(intersection.z + ray.z) / 64][(int)intersection.x / 64].front;
+			side = WALL_FRONT;
+		}
+		else
+		{
+			texture_id = main->map->map_cells[(int)(intersection.z + ray.z) / 64][(int)intersection.x / 64].back;
+			side = WALL_BACK;
+		}
+		
+	}
+	else
+	{
+		if(ray.x > 0)
+		{
+			texture_id = main->map->map_cells[(int)(intersection.z) / 64][(int)(intersection.x + ray.x) / 64].left;
+			side = WALL_LEFT;
+		}
+		else
+		{
+			texture_id = main->map->map_cells[(int)(intersection.z) / 64][(int)(intersection.x + ray.x) / 64].right;
+			side = WALL_RIGHT;
+		}
+	}
+	if (!main->images.textures[texture_id])
+		texture_id = 2;
+	return (t_wall_info){main->images.textures[texture_id], side};
+}
+
 void	walls(t_main *main, float cos, float sin)
 {
 	int i = 0;
@@ -283,10 +320,14 @@ void	walls(t_main *main, float cos, float sin)
 	float fish_eye_fix;
 	int h_or_v;
 	int color;
+	t_wall_info wall_info;
+	t_vec3 ray;
+
 	while(i < main->width)
 	{
-		h_intersect = intersection_horizontal(main, main->position, rotate_y((t_vec3){cur, 32, 1}, cos, sin));
-		v_intersect = intersection_vertical(main, main->position, rotate_y((t_vec3){cur, 32, 1}, cos, sin));
+		ray = rotate_y((t_vec3){cur, 32, 1}, cos, sin);
+		h_intersect = intersection_horizontal(main, main->position, ray);
+		v_intersect = intersection_vertical(main, main->position, ray);
 		fish_eye_fix = fish_eye((t_vec3){0, 0, 1}, (t_vec3){cur, 0, 1});
 		h_intersect_1 = h_intersect;
 		v_intersect_1 = v_intersect;
@@ -303,11 +344,17 @@ void	walls(t_main *main, float cos, float sin)
 		start_paint = (main->height - length_wall_p) / 2;
 		j = 0;
 		int *dist = (int*)(main->sur->pixels);
-		int	*src = (int*)(main->images.textures[0]->pixels);
+		wall_info = get_wall_info(main, ray, intersection, h_or_v);
+		int	*src = (int*)(wall_info.texture->pixels);
 		while (j < length_wall_p)
 		{
-			color = src[(int)((((length_wall_o - length_wall_p) / 2 + (float)j) / length_wall_o * 64.0)) * 64 +
-			(h_or_v == 1 ? ((int)(intersection.x) % 64) : (63 - (int)(intersection.z) % 64))];
+			if (wall_info.side == WALL_BACK || wall_info.side == WALL_FRONT)
+				color = src[(int)((((length_wall_o - length_wall_p) / 2 + (float)j) / length_wall_o * 64.0)) * 64 +
+				(wall_info.side == WALL_BACK ? 63 - (((int)(intersection.x) % 64)) : ((int)(intersection.x) % 64))];
+			else
+				color = src[(int)((((length_wall_o - length_wall_p) / 2 + (float)j) / length_wall_o * 64.0)) * 64 +
+				(wall_info.side == WALL_LEFT ? 63 - (((int)(intersection.z) % 64)) : ((int)(intersection.z) % 64))];
+			
 			dist[(start_paint + j) * main->sur->w + i] = color;
 			
 			j++;

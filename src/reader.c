@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/04 19:19:16 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/02/26 22:17:00 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 14:31:57 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ static int			check_elem(char *s, int wc)
 				check = 0;
 			i++;
 		}
-		free(elem);
 	}
 	free(elem);
 	return (check);
