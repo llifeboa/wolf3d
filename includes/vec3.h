@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #ifndef VEC3_H
-#define	VEC3_H
-#include <math.h>
+# define VEC3_H
+# include <math.h>
+
 typedef struct	s_vec3
 {
 	float		x;
@@ -20,11 +21,12 @@ typedef struct	s_vec3
 	float		z;
 }				t_vec3;
 
-float		vec3_dot(t_vec3 v1, t_vec3 v2);
-float		vec3_length(t_vec3 v);
-t_vec3		vec3_div(t_vec3 v, float s);
-t_vec3		vec3_normalize(t_vec3 v);
-t_vec3		vec3_mult(t_vec3 v, float s);
-t_vec3		vec3_sub(t_vec3 v1, t_vec3 v2);
-t_vec3		vec3_add(t_vec3 v1, t_vec3 v2);
+float			vec3_dot(t_vec3 v1, t_vec3 v2);
+float			vec3_length(t_vec3 v);
+t_vec3			vec3_div(t_vec3 v, float s);
+t_vec3			vec3_normalize(t_vec3 v);
+t_vec3			vec3_mult(t_vec3 v, float s);
+t_vec3			vec3_sub(t_vec3 v1, t_vec3 v2);
+t_vec3			vec3_add(t_vec3 v1, t_vec3 v2);
+
 #endif

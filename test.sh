@@ -1,0 +1,13 @@
+make;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;
+./wolf3d;

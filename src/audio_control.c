@@ -20,17 +20,23 @@ void	audio_contol(t_main *main)
 			Mix_PlayChannel(2, main->sound.step, 0);
 		if (main->e.key.keysym.sym == SDLK_s)
 			Mix_PlayChannel(2, main->sound.step, 0);
-		if (main->e.key.keysym.sym == SDLK_w && main->e.key.keysym.sym == SDLK_d)
+		if (main->e.key.keysym.sym == SDLK_w &&
+		main->e.key.keysym.sym == SDLK_d)
 			Mix_PlayChannel(2, main->sound.step, 0);
-		if (main->e.key.keysym.sym == SDLK_w && main->e.key.keysym.sym == SDLK_a)
+		if (main->e.key.keysym.sym == SDLK_w &&
+		main->e.key.keysym.sym == SDLK_a)
 			Mix_PlayChannel(2, main->sound.step, 0);
-		if (main->e.key.keysym.sym == SDLK_s && main->e.key.keysym.sym == SDLK_d)
+		if (main->e.key.keysym.sym == SDLK_s &&
+		main->e.key.keysym.sym == SDLK_d)
 			Mix_PlayChannel(2, main->sound.step, 0);
-		if (main->e.key.keysym.sym == SDLK_s && main->e.key.keysym.sym == SDLK_a)
+		if (main->e.key.keysym.sym == SDLK_s &&
+		main->e.key.keysym.sym == SDLK_a)
 			Mix_PlayChannel(2, main->sound.step, 0);
-		if (main->e.key.keysym.sym == SDLK_w && main->e.key.keysym.sym == SDLK_p)
+		if (main->e.key.keysym.sym == SDLK_w &&
+		main->e.key.keysym.sym == SDLK_p)
 			Mix_PlayChannel(2, main->sound.step, 0);
-		if (main->e.key.keysym.sym == SDLK_s && main->e.key.keysym.sym == SDLK_p)
+		if (main->e.key.keysym.sym == SDLK_s &&
+		main->e.key.keysym.sym == SDLK_p)
 			Mix_PlayChannel(2, main->sound.step, 0);
 	}
 }

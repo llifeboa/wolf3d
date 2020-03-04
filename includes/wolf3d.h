@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	WOLF3D_H
-# define	WOLF3D_H
-# define	THREAD_COUNT 10
+#ifndef WOLF3D_H
+# define WOLF3D_H
+# define THREAD_COUNT 10
 # include <libft.h>
 # include <SDL2/SDL.h>
 # include <SDL2/SDL_image.h>
@@ -21,8 +21,8 @@
 # include <vec3.h>
 # include <pthread.h>
 # include <fcntl.h>
-# define	CAN_ANIMATITE 0
-# define	ANIMATING 1
+# define CAN_ANIMATITE 0
+# define ANIMATING 1
 
 typedef struct		s_animation
 {
@@ -61,7 +61,6 @@ typedef struct		s_sounds
 	Mix_Chunk		*bowhit;
 	Mix_Chunk		*step;
 }					t_sounds;
-
 
 typedef struct		s_main
 {
