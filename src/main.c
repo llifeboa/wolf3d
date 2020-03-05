@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:07:37 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/04 14:24:11 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/04 16:47:40 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,7 +372,11 @@ void move(t_main *main, float cos, float sin)
 
 	prev_position = main->position;
 	dir_vec = rotate_y(main->forward_dir, cos, sin);
-	main->position = vec3_add(main->position, vec3_mult(dir_vec, main->move_dir * main->move_speed));
+	main->position = (t_vec3){main->position.x + dir_vec.x * main->move_speed * main->move_dir, main->position.y, main->position.z};
+	if(main->map->map_cells[(int)main->position.z / 64][(int)main->position.x / 64].front)
+		main->position = prev_position;
+	prev_position = main->position;
+	main->position = (t_vec3){main->position.x, main->position.y, main->position.z + dir_vec.z * main->move_speed * main->move_dir};
 	if(main->map->map_cells[(int)main->position.z / 64][(int)main->position.x / 64].front)
 		main->position = prev_position;
 }
