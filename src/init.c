@@ -6,7 +6,7 @@
 /*   By: llifeboa <llifeboa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 14:38:51 by llifeboa          #+#    #+#             */
-/*   Updated: 2020/03/04 14:29:38 by llifeboa         ###   ########.fr       */
+/*   Updated: 2020/03/07 22:01:52 by llifeboa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,41 +26,25 @@ void			sound_init(t_main *main)
 
 static void		load_textures(t_main *main)
 {
-	SDL_RWops *rwop;
 
-	rwop = SDL_RWFromFile("img/textures/wolf.png", "r");
-	malloc_check(main->images.textures[1] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/textures/wood.png", "r");
-	malloc_check(main->images.textures[2] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/textures/eagle.png", "r");
-	malloc_check(main->images.textures[3] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/textures/pikuma.png", "r");
-	malloc_check(main->images.textures[4] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/textures/bluestone.png", "r");
-	malloc_check(main->images.textures[5] = IMG_LoadPNG_RW(rwop));
+	malloc_check(main->images.textures[1] = IMG_Load("img/textures/wolf.png"));
+	malloc_check(main->images.textures[2] = IMG_Load("img/textures/wood.png"));
+	malloc_check(main->images.textures[3] = IMG_Load("img/textures/eagle.png"));
+	malloc_check(main->images.textures[4] = IMG_Load("img/textures/pikuma.png"));
+	malloc_check(main->images.textures[5] = IMG_Load("img/textures/bluestone.png"));
 }
 
 static void		load_animations_bow(t_main *main)
 {
 	
-	SDL_RWops *rwop;
-	
-	rwop = SDL_RWFromFile("img/animation/bow/0-7.png", "r");
-	malloc_check(main->images.animation[0][0] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-0.png", "r");
-	malloc_check(main->images.animation[0][1] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-1.png", "r");
-	malloc_check(main->images.animation[0][2] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-2.png", "r");
-	malloc_check(main->images.animation[0][3] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-3.png", "r");
-	malloc_check(main->images.animation[0][4] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-4.png", "r");
-	malloc_check(main->images.animation[0][5] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-5.png", "r");
-	malloc_check(main->images.animation[0][6] = IMG_LoadPNG_RW(rwop));
-	rwop = SDL_RWFromFile("img/animation/bow/0-6.png", "r");
-	malloc_check(main->images.animation[0][7] = IMG_LoadPNG_RW(rwop));
+	malloc_check(main->images.animation[0][0] = IMG_Load("img/animation/bow/0-7.png"));
+	malloc_check(main->images.animation[0][1] = IMG_Load("img/animation/bow/0-0.png"));
+	malloc_check(main->images.animation[0][2] = IMG_Load("img/animation/bow/0-1.png"));
+	malloc_check(main->images.animation[0][3] = IMG_Load("img/animation/bow/0-2.png"));
+	malloc_check(main->images.animation[0][4] = IMG_Load("img/animation/bow/0-3.png"));
+	malloc_check(main->images.animation[0][5] = IMG_Load("img/animation/bow/0-4.png"));
+	malloc_check(main->images.animation[0][6] = IMG_Load("img/animation/bow/0-5.png"));
+	malloc_check(main->images.animation[0][7] = IMG_Load("img/animation/bow/0-6.png"));
 }
 
 static void		load_animations(t_main *main)
