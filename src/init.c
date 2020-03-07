@@ -79,6 +79,7 @@ t_main			*init()
 
 	int fd = open("./maps/level1.map", O_RDONLY);
 	main = (t_main*)malloc(sizeof(t_main));
+	main->map = get_map_from_file(fd);
 	main->quit = 1;
 	main->height = 1080;
 	main->width = 1920;
@@ -88,7 +89,7 @@ t_main			*init()
 	main->rotation_speed = 0.02;
 	main->move_dir = 0;
 	main->move_speed = 4;
-	main->position = (t_vec3){64 * 6, 32, 64 * 6};
+	main->position = (t_vec3){64 * main->map->player_pos.x, 32, 64 * main->map->player_pos.z};
 	main->forward_dir = (t_vec3){0, 0, 1};
 	main->aspect_ratio = (float)main->width / main->height;
 	main->step = main->height / THREAD_COUNT / 2;
@@ -96,7 +97,6 @@ t_main			*init()
 	main->win = SDL_CreateWindow("wolf3d", SDL_WINDOWPOS_CENTERED,
 	SDL_WINDOWPOS_CENTERED, main->width, main->height, SDL_WINDOW_SHOWN);
 	main->sur = SDL_GetWindowSurface(main->win);
-	main->map = get_map_from_file(fd);
 	malloc_check(main->intersections = (t_vec3*)malloc(sizeof(t_vec3) * (main->width)));
 	IMG_Init(IMG_INIT_PNG);
 	load_textures(main);

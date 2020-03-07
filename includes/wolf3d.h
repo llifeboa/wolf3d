@@ -57,6 +57,7 @@ typedef struct		s_map
 	t_map_cell		**map_cells;
 	int				width;
 	int				height;
+	t_vec3			player_pos;
 }					t_map;
 
 typedef struct		s_img

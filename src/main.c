@@ -424,7 +424,7 @@ int main()
 		
 		SDL_UnlockSurface(main->sur);
 		SDL_UpdateWindowSurface(main->win);
-		printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
+		// printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
 	}
 	SDL_DestroyWindow(main->win);
 	SDL_Quit();
