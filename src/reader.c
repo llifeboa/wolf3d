@@ -12,6 +12,32 @@
 
 #include <wolf3d.h>
 
+static t_vec3		get_pos(t_map *map, char *line)
+{
+	t_vec3 pos;
+	char **find_player;
+	int x;
+
+	find_player = ft_strsplit(line, ' ');
+	x = 0;
+	while (find_player[x])
+	{
+		if (find_player[x][0] == 'p')
+			break ;
+		x++;
+	}
+	pos.x = x;
+	pos.y = 1;
+	pos.z = map->height;
+	return (pos);
+}
+
+static void			map_validation(t_map *map)
+{
+	if (map->height < 3 || map->width < 3)
+		exit_with_error("error: invalid map!\n");
+}
+
 static void			free_split(char **split)
 {
 	int i;
@@ -44,8 +70,9 @@ static int			check_elem(char *s, int wc)
 	check = 1;
 	if (wc == 1)
 	{
-		value = ft_atoi_with_non_digit_error(elem[i]);
-		if (!(value >= 0 && value <= 10))
+		if (elem[i][0] != 'p')
+			value = ft_atoi_with_non_digit_error(elem[i]);
+		if (!(value >= 0 && value <= 10) || !(value != 112))
 			check = 0;
 		free(elem[i]);
 	}
@@ -81,13 +108,14 @@ static int			check_line(char **str, int flag, int w_count)
 	if (flag == 1)
 		while (str[i])
 		{
-			if (ft_atoi_with_non_digit_error(str[i]) == 0)
+			if (ft_atoi_with_non_digit_error(str[i]) == 0 || str[i][0] == 'p')
 				return (0);
 			i++;
 		}
 	else if (flag == 2)
 		if (ft_atoi_with_non_digit_error(str[i]) == 0 ||
-		ft_atoi_with_non_digit_error(str[w_count - 1]) == 0)
+			ft_atoi_with_non_digit_error(str[w_count - 1]) == 0 ||
+			str[i][0] == 'p' || str[w_count - 1][0] == 'p')
 			return (0);
 	return (1);
 }
@@ -108,9 +136,13 @@ static int			get_height(void)
 	while ((gnl = get_next_line(fd, &line)))
 	{
 		if (gnl < 0)
-			exit_with_error("error: file didnt open");
+			exit_with_error("error: file didnt open\n");
+		if (line[0] == '\0')
+			exit_with_error("error: invalid map\n");
 		h++;
 	}
+	if (h == 0)
+		exit_with_error("error: empty file\n");
 	return (h);
 }
 
@@ -151,6 +183,13 @@ void				push_elem(char **z, t_map_cell *points)
 			points[i].back = ft_atoi_with_non_digit_error(z[i]);
 			points[i].left = ft_atoi_with_non_digit_error(z[i]);
 			points[i].right = ft_atoi_with_non_digit_error(z[i]);
+		}
+		else if (wc == 1 && z[i][0] == 'p')
+		{
+			points[i].front = 0;
+			points[i].back = 0;
+			points[i].left = 0;
+			points[i].right = 0;
 		}
 		else if (wc == 4 && check_elem(z[i], wc))
 		{
@@ -225,6 +264,7 @@ t_map				*get_map_from_file(int fd)
 	t_map		*map;
 	t_map_cell	*points;
 	int			h;
+	int			check;
 
 	malloc_check(map = (t_map*)malloc(sizeof(t_map)));
 	map->height = 1;
@@ -235,14 +275,30 @@ t_map				*get_map_from_file(int fd)
 	points = line_to_point_array(1, line, map->width);
 	map = add_new_line_to_map(points, map);
 	map->height += 1;
+	check = 0;
 	while ((gnl_res = get_next_line(fd, &line)))
 	{
-		points = h == map->height ? line_to_point_array(1, line, map->width) :
-		line_to_point_array(2, line, map->width);
-		map = add_new_line_to_map(points, map);
-		map->height += 1;
+		if (!ft_strchr(line, 'p'))
+		{
+			points = h == map->height ? line_to_point_array(1, line, map->width) :
+			line_to_point_array(2, line, map->width);
+			map = add_new_line_to_map(points, map);
+			map->height += 1;
+		}
+		else
+		{
+			if (check == 1)
+				exit_with_error("error: invalid map 1\n");
+			check = 1;
+			map->player_pos = get_pos(map, line);
+			line_to_point_array(2, line, map->width);
+			map = add_new_line_to_map(points, map);
+			map->height += 1;
+		}
+		
 	}
 	free(line);
 	map->height -= 1;
+	map_validation(map);
 	return (map);
 }
