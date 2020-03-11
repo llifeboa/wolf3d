@@ -51,3 +51,15 @@ int		ft_atoi_with_non_digit_error(const char *str)
 		exit_with_error("error: invalid map value");
 	return (res * sign);
 }
+
+int		by_byte_dis(int color, unsigned char dis)
+{
+	unsigned char *result;
+
+	dis = dis == 0 ? 1 : dis;
+	result = (unsigned char*)&color;
+	result[1] = (unsigned char)((float)result[1] / dis);
+	result[2] = (unsigned char)((float)result[2] / dis);
+	result[0] = (unsigned char)((float)result[0] / dis);
+	return (color);
+}
