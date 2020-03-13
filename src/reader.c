@@ -41,13 +41,6 @@ t_map			*add_new_line_to_map(t_map_cell *line, t_map *map)
 	return (map);
 }
 
-void			get_properties(t_map *map, char *line, int *h)
-{
-	map->height = 1;
-	*h = get_height();
-	map->width = get_word_count(line, ' ');
-}
-
 void			map_filler(t_map *map, char *line, int h)
 {
 	t_map_cell *points;
@@ -68,7 +61,7 @@ void			player_find(t_map *map, char *line, int h, int *check)
 	map_filler(map, line, h);
 }
 
-t_map			*get_map_from_file(int fd)
+t_map			*get_map_from_file(int fd, char *filename)
 {
 	char		*line;
 	t_map		*map;
@@ -78,7 +71,9 @@ t_map			*get_map_from_file(int fd)
 	malloc_check(map = (t_map*)malloc(sizeof(t_map)));
 	if ((get_next_line(fd, &line)) == -1)
 		exit_with_error("error: file didnt open");
-	get_properties(map, line, &h);
+	map->height = 1;
+	h = get_height(filename);
+	map->width = get_word_count(line, ' ');
 	map_filler(map, line, h);
 	check = 0;
 	while (get_next_line(fd, &line))

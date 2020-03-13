@@ -16,7 +16,7 @@
 **	int get_height(char *filename)
 */
 
-int				get_height(void)
+int				get_height(char *filename)
 {
 	int		fd;
 	int		h;
@@ -24,7 +24,7 @@ int				get_height(void)
 	char	*line;
 
 	h = 0;
-	fd = open("./maps/level1.map", O_RDONLY);
+	fd = open(filename, O_RDONLY);
 	while ((gnl = get_next_line(fd, &line)))
 	{
 		if (gnl < 0)

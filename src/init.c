@@ -42,14 +42,14 @@ void			init_sdl(t_main *main)
 	main->sur = SDL_GetWindowSurface(main->win);
 }
 
-t_main			*init(void)
+t_main			*init(char *filename)
 {
 	t_main	*main;
 	int		fd;
 
-	fd = open("./maps/level1.map", O_RDONLY);
+	fd = open(filename, O_RDONLY);
 	main = (t_main*)malloc(sizeof(t_main));
-	main->map = get_map_from_file(fd);
+	main->map = get_map_from_file(fd, filename);
 	var_init(main);
 	init_sdl(main);
 	malloc_check(main->intersections =

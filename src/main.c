@@ -63,13 +63,18 @@ void	render(t_main *main)
 	}
 }
 
-int		main(void)
+int		main(int ac, char **av)
 {
 	t_main	*main;
 
-	main = init();
-	render(main);
-	SDL_DestroyWindow(main->win);
-	SDL_Quit();
+	if (ac == 2)
+	{
+		main = init(av[1]);
+		render(main);
+		SDL_DestroyWindow(main->win);
+		SDL_Quit();
+	}
+	else
+		exit_with_error("usage: ./wolf3d <input_map>\n");
 	return (0);
 }
