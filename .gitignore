@@ -4,3 +4,4 @@ obj
 wolf3d
 libft/*.o
 libft/libft.a
+.history

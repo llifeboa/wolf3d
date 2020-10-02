@@ -20,7 +20,7 @@ void	update(t_main *main, float cos, float sin, Uint32 t)
 	printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
 }
 
-void	create_threads(t_main *main, float cos, float sin, t_ray_data *thread)
+void	create_threads(t_main *main, float *cos, float *sin, t_ray_data *thread)
 {
 	int i;
 
@@ -28,8 +28,8 @@ void	create_threads(t_main *main, float cos, float sin, t_ray_data *thread)
 	while (i < THREAD_COUNT)
 	{
 		thread[i].main = main;
-		thread[i].cos = &cos;
-		thread[i].sin = &sin;
+		thread[i].cos = cos;
+		thread[i].sin = sin;
 		thread[i].y = (main->height - i * main->step) - 1;
 		pthread_create(&(thread[i].tid), NULL, cast_ray, &thread[i]);
 		i++;
@@ -55,7 +55,7 @@ void	render(t_main *main)
 		cos = cosf(main->angle);
 		sin = sinf(main->angle);
 		move(main, cos, sin);
-		create_threads(main, cos, sin, thread);
+		create_threads(main, &cos, &sin, thread);
 		i = -1;
 		while (++i < THREAD_COUNT)
 			pthread_join(thread[i].tid, NULL);
