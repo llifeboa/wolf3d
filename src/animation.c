@@ -54,7 +54,7 @@ void	animation_update(t_main *main, t_animation *anim, Uint32 cur_time)
 	delta = cur_time - anim->start_time;
 	if (anim->state)
 	{
-		if (delta / (anim->duration / anim->frame_count) == anim->frame_count)
+		if (delta >= anim->duration)
 		{
 			anim->state = CAN_ANIMATITE;
 			print_frame(main, anim->frames[0], 6);
