@@ -17,7 +17,7 @@ void	update(t_main *main, float cos, float sin, Uint32 t)
 	walls(main, cos, sin);
 	animation_update(main, main->weapon, SDL_GetTicks());
 	SDL_UpdateWindowSurface(main->win);
-	printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
+	//printf("FPS: %d\n", 1000 / (SDL_GetTicks() - t));
 }
 
 void	create_threads(t_main *main, float *cos, float *sin, t_ray_data *thread)

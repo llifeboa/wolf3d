@@ -25,13 +25,17 @@ void			var_init(t_main *main)
 	main->minimap_scale = 0.5;
 	main->angle = 0;
 	main->rotation_dir = 0;
-	main->rotation_speed = 0.02;
+	main->rotation_speed = 0.03;
 	main->move_dir = 0;
 	main->move_speed = 4;
 	main->position = main->map->player_pos;
 	main->forward_dir = (t_vec3){0, 0, 1};
 	main->aspect_ratio = (float)main->width / main->height;
 	main->step = main->height / THREAD_COUNT / 2;
+	main->dash.duration = 400;
+	main->dash.is_dash_ready = DASH_READY;
+	main->dash.multiplayer = 1;
+	main->dash.cooldown = 1000;
 }
 
 void			init_sdl(t_main *main)

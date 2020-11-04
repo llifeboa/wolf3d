@@ -12,7 +12,7 @@
 
 #ifndef WOLF3D_H
 # define WOLF3D_H
-# define THREAD_COUNT 10
+# define THREAD_COUNT 25
 # include <libft.h>
 # include <SDL2/SDL.h>
 # include <SDL2/SDL_image.h>
@@ -27,6 +27,13 @@
 # define WALL_BACK 1
 # define WALL_LEFT 2
 # define WALL_RIGHT 3
+# define DASH_READY 0
+# define DASH_DASHING 1
+# define DASH_FINISHED 3
+
+typedef struct		s_sprite{
+	t_vec3			position;
+}					t_sprite;
 
 typedef struct		s_wall_info
 {
@@ -73,6 +80,14 @@ typedef struct		s_sounds
 	Mix_Chunk		*step;
 }					t_sounds;
 
+typedef struct		s_skill_dash{
+	short			is_dash_ready;
+	Uint32			start_time;
+	short			multiplayer;
+	Uint32			duration;
+	Uint32			cooldown;
+}					t_skill_dash;
+
 typedef struct		s_main
 {
 	SDL_Window		*win;
@@ -97,6 +112,8 @@ typedef struct		s_main
 	t_vec3			*intersections;
 	t_animation		*weapon;
 	t_sounds		sound;
+	t_skill_dash	dash;
+
 }					t_main;
 
 typedef struct		s_ray_data
